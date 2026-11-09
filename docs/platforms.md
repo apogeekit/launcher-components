@@ -45,7 +45,7 @@ The TypeScript runner is [`implementations/typescript/test/conformance.test.ts`]
 
 ## Directory and authorization
 
-Every implementation consumes `launcher-pds-dir`'s [`data/providers.json`](https://github.com/solimaniac/launcher-pds-dir/blob/main/data/providers.json) and [`schema.json`](https://github.com/solimaniac/launcher-pds-dir/blob/main/schema.json). npm consumers can import the package; Dart can bundle or fetch a version-pinned JSON snapshot and validate the same fields. A native package does not need the directory's JavaScript helpers. Missing invite information means unknown. Apps decide how to supply logos as platform assets.
+Every implementation consumes `pds-registry`'s [`data/providers.json`](https://github.com/solimaniac/pds-registry/blob/main/data/providers.json) and [`schema.json`](https://github.com/solimaniac/pds-registry/blob/main/schema.json). npm consumers can import the package; Dart can bundle or fetch a version-pinned JSON snapshot and validate the same fields. A native package does not need the directory's JavaScript helpers. Missing invite information means unknown. Apps decide how to supply logos as platform assets.
 
 OAuth is a platform adapter boundary. The browser adapter uses the official browser SDK. A future Flutter adapter owns its system-browser authorization, redirect/deep-link handling, protocol verification, cancellation, and secure session storage, or delegates these to an app-owned backend. Its result stays local to that app. Do not share credentials across runtimes or require a webview to reuse the flow.
 

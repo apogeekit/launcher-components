@@ -2,7 +2,7 @@ import { createLoginFlow, LauncherError, type AccountProvider } from '../src/ind
 import { mountLogin, openLoginDialog } from '../src/dom'
 import '../styles.css'
 
-// Deliberately fictional hosts for this offline UI harness. Use launcher-pds-dir in your real app.
+// Deliberately fictional hosts for this offline UI harness. Use pds-registry in your real app.
 const providers: AccountProvider[] = [
   {
     id: 'community',

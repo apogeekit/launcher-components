@@ -1,7 +1,7 @@
 import type { ErrorKey, Intent, View } from './contract-types'
 export type { ErrorKey, Intent, LoginMode, View } from './contract-types'
 
-/** Structural contract: launcher-pds-dir providers can be passed directly. */
+/** Structural contract: pds-registry providers can be passed directly. */
 export interface AccountProvider {
   readonly id: string
   readonly name: string

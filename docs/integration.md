@@ -7,7 +7,7 @@ The repository keeps each programming-language implementation under `implementat
 - `launcher-components`: headless state and validation, no browser globals at import time.
 - `launcher-components/dom`: ready-to-mount light DOM and a standalone provider picker.
 - `launcher-components/oauth`: optional adapter for `@atproto/oauth-client-browser`.
-- `launcher-pds-dir`: optional directory of hosts; custom arrays with the same structural fields work too.
+- `pds-registry`: optional directory of hosts; custom arrays with the same structural fields work too.
 
 Vanilla TypeScript keeps the current launcher's DOM implementation small and makes it usable without adopting a framework. There is no Shadow DOM or custom-element registration, so app CSS, server rendering, and framework lifecycles remain predictable. A framework can also render its own UI from `flow.getState()` and `flow.subscribe()`.
 
@@ -68,7 +68,7 @@ Pass `t(key, values)` for your translation system, or use `translate({ ...englis
 ## Choose hosts
 
 ```ts
-import { providers } from 'launcher-pds-dir'
+import { providers } from 'pds-registry'
 const flow = createLoginFlow({
   providers,
   providerAllowlist: ['eurosky', 'blacksky'],
@@ -81,7 +81,7 @@ An omitted allowlist means all enabled hosts; an empty list means no signup host
 
 Custom signup hosts require `allowCustomService: true`, and cannot be combined with an allowlist. A custom host must support AT Protocol OAuth and account creation; the UI cannot guarantee those capabilities. Hosted account creation, email verification, invite codes, and acceptance of a host's terms stay on the host's own page.
 
-Copy `node_modules/launcher-pds-dir/logos/` to your app's public assets if you want logos, then provide `logoUrl: provider => provider.logo ? '/your-assets/' + provider.logo : undefined` to the renderer. Nothing fetches a remote directory or contacts every host when the component mounts. Keep directory updates explicit through your dependency lockfile.
+Copy `node_modules/pds-registry/logos/` to your app's public assets if you want logos, then provide `logoUrl: provider => provider.logo ? '/your-assets/' + provider.logo : undefined` to the renderer. Nothing fetches a remote directory or contacts every host when the component mounts. Keep directory updates explicit through your dependency lockfile.
 
 ## Framework lifecycle
 
@@ -106,4 +106,4 @@ For a custom React design, pass `flow.subscribe` and `flow.getState` to `useSync
 
 ## Before the first npm release
 
-These repositories can be installed directly from GitHub (`npm install github:solimaniac/launcher-components` and `github:solimaniac/launcher-pds-dir`). Their `prepare` scripts build the distribution. Once released to npm, use normal versioned dependencies. `npm pack --dry-run` checks what will ship without publishing anything.
+These repositories can be installed directly from GitHub (`npm install github:solimaniac/launcher-components` and `github:solimaniac/pds-registry`). Their `prepare` scripts build the distribution. Once released to npm, use normal versioned dependencies. `npm pack --dry-run` checks what will ship without publishing anything.
