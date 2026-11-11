@@ -1,5 +1,8 @@
 # launcher-components
 
+> [!WARNING]
+> **Work in progress (WIP).** This project is experimental and not ready for production use. APIs and data formats may change.
+
 AT Protocol login and onboarding components. The current TypeScript implementation, under `implementations/typescript/`, provides unstyled components for plain JavaScript, React, Vue, Svelte, and other browser apps. Includes a headless flow, accessible DOM components, and an optional official OAuth SDK adapter.
 
 ```sh
