@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest'
+import { expect, expectTypeOf, test } from 'vitest'
 import contract from '../../../contracts/v1/flow.json'
 import corpus from '../../../contracts/v1/conformance.json'
 import {
@@ -7,11 +7,13 @@ import {
   LauncherError,
   type AuthRequest,
   type ErrorKey,
+  type Intent,
   type LoginFlowOptions,
   type LoginMode,
   type View,
 } from '../src/index'
-import { providers } from './fixtures'
+
+const { providers } = corpus
 
 interface Result {
   account: string
@@ -36,6 +38,10 @@ interface SharedCase {
 }
 
 test('shared contract names, defaults, and copy are usable by every implementation', () => {
+  expectTypeOf<LoginMode>().toEqualTypeOf<keyof typeof contract.modes>()
+  expectTypeOf<View>().toEqualTypeOf<keyof typeof contract.views>()
+  expectTypeOf<Intent>().toEqualTypeOf<keyof typeof contract.intents>()
+  expectTypeOf<ErrorKey>().toEqualTypeOf<keyof typeof contract.errors>()
   expect(corpus.version).toBe(contract.version)
   expect(new Set(corpus.cases.map(c => c.id)).size).toBe(corpus.cases.length)
   const views = new Set(Object.keys(contract.views))

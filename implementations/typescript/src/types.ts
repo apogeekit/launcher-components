@@ -1,5 +1,15 @@
-import type { ErrorKey, Intent, View } from './contract-types'
-export type { ErrorKey, Intent, LoginMode, View } from './contract-types'
+export type LoginMode = 'signin' | 'signup' | 'both'
+export type View = 'intro' | 'signin' | 'providers' | 'pending' | 'error' | 'complete'
+export type Intent = 'signin' | 'signup'
+export type ErrorKey =
+  | 'errors.identifier'
+  | 'errors.service'
+  | 'errors.provider'
+  | 'errors.initialization'
+  | 'errors.unsupportedProvider'
+  | 'errors.authorization'
+  | 'errors.cancelled'
+  | 'errors.callback'
 
 /** Structural contract: pds-registry providers can be passed directly. */
 export interface AccountProvider {

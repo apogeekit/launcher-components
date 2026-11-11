@@ -28,6 +28,6 @@ const unmount = mountLogin(container, flow, { appName: 'Your app' })
 
 No CSS loads automatically. Components use light DOM, inherited fonts, and stable `data-part` attributes. Optional structural CSS: `launcher-components/styles.css`. Use `openLoginDialog` for a modal or `presentation: 'fullscreen'` for a full-page layout.
 
-Shared JSON contracts, copy, and conformance fixtures support future language implementations, including Dart/Flutter, in the same repository. See [platforms](docs/platforms.md), [integration](docs/integration.md), [API](docs/api.md), and [onboarding research](docs/onboarding-research.md).
+Shared JSON contracts, copy, and conformance fixtures support future language implementations, including Dart/Flutter. See [integration](docs/integration.md) and [onboarding research](https://github.com/solimaniac/launcher-components/blob/main/docs/onboarding-research.md).
 
 Not published to npm yet. Development: `npm ci && npm run check`; `npm run dev` opens the TypeScript examples. Publish later with `npm publish --access public`; npmx.dev browses npm. Nothing publishes automatically.

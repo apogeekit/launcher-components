@@ -2,7 +2,7 @@
 import { afterEach, expect, test, vi } from 'vitest'
 import { createLoginFlow } from '../src/index'
 import { mountLogin, renderProviderPicker } from '../src/dom'
-import { providers } from './fixtures'
+import { providers } from '../../../contracts/v1/conformance.json'
 
 afterEach(() => document.body.replaceChildren())
 function root() {

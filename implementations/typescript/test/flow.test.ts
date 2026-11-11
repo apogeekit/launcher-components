@@ -1,6 +1,6 @@
 import { expect, test, vi } from 'vitest'
 import { createLoginFlow, LauncherError, normalizeIdentifier, normalizeService, type AuthRequest } from '../src/index'
-import { providers } from './fixtures'
+import { providers } from '../../../contracts/v1/conformance.json'
 
 test('signup choices enforce enabled state, strict allowlists, and no custom bypass', async () => {
   const start = vi.fn(async () => {})

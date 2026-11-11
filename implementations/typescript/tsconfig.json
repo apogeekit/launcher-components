@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "types": ["node"],
+    "types": ["node", "vite/client"],
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "moduleResolution": "Bundler",
@@ -15,5 +15,5 @@
     "esModuleInterop": true,
     "ignoreDeprecations": "6.0"
   },
-  "include": ["src", "test", "examples/main.ts", "examples/env.d.ts"]
+  "include": ["src", "test", "examples"]
 }
