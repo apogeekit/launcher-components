@@ -73,7 +73,7 @@ Custom signup requires `allowCustomService: true` and cannot be combined with an
 | `back()`, `retry()`                               | Navigate back or recover the previous screen                       |
 | `destroy()`                                       | Abort pending work, detach subscribers, and ignore late results    |
 
-Busy operations block navigation and duplicate requests. Provider metadata is a bundled snapshot; the components do not fetch a remote directory or contact hosts when mounted. Missing invite information means unknown. Copy `node_modules/pds-registry/logos/` into your public assets and supply a `logoUrl` resolver when using logos.
+Busy operations block navigation and duplicate requests. Provider metadata is a bundled snapshot; the components do not fetch a remote directory or contact hosts when mounted. Missing invite information means unknown. Copy `node_modules/pds-registry/providers/` into your public assets and supply a `logoUrl` resolver when using logos. Each provider's logo sits beside its `provider.json` record.
 
 ## Rendering, styling, and translations
 
@@ -84,7 +84,7 @@ const unmount = mountLogin(container, flow, {
   appName: 'Your app',
   presentation: 'fullscreen', // Or 'inline' (default).
   headingLevel: 1,
-  logoUrl: provider => (provider.logo ? '/hosts/' + provider.logo : undefined),
+  logoUrl: provider => (provider.logo ? '/hosts/' + provider.id + '/' + provider.logo : undefined),
 })
 // On teardown: unmount(); flow.destroy()
 
@@ -115,6 +115,6 @@ Shared files remain independent of TypeScript:
 
 TypeScript checks its public types against the contract during type checking and runs the scenarios in `npm test`. Cases provide configuration, simulated auth, and ordered steps. Compare only supplied `expect` fields; `defer` leaves operations pending and `resolve` settles them. Normalize absent errors to `null` and expose result presence as `hasResult`. The [TypeScript runner](https://github.com/solimaniac/launcher-components/blob/main/implementations/typescript/test/conformance.test.ts) is a reference for native runners.
 
-A future Dart/Flutter package can live under `implementations/flutter/` with its own manifest, widgets, OAuth adapter, SDK, tests, CI, and pub.dev release. It can bundle the shared copy or convert it to ARB, run the same scenarios, and consume the registry's [JSON](https://github.com/solimaniac/pds-registry/blob/main/data/providers.json) and [schema](https://github.com/solimaniac/pds-registry/blob/main/schema.json) without running JavaScript. Fonts, theme, native presentation, protocol verification, and secure session storage belong to the implementation and consuming app.
+A future Dart/Flutter package can live under `implementations/flutter/` with its own manifest, widgets, OAuth adapter, SDK, tests, CI, and pub.dev release. It can bundle the shared copy or convert it to ARB, run the same scenarios, and consume the registry's [provider records](https://github.com/solimaniac/pds-registry/tree/main/providers) and [schema](https://github.com/solimaniac/pds-registry/blob/main/schema.json) without running JavaScript. Fonts, theme, native presentation, protocol verification, and secure session storage belong to the implementation and consuming app.
 
 Language-package releases are independent. Record the supported contract major version; breaking shared behavior needs a new contract directory such as `contracts/v2/`. The existing JSON files are also exported by the npm package at `launcher-components/contracts/v1/flow.json`, `launcher-components/contracts/v1/conformance.json`, and `launcher-components/copy/en.json`.
