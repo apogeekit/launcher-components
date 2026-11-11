@@ -38,22 +38,20 @@
         "default": "./dist/oauth.cjs"
       }
     },
-    "./styles.css": "./implementations/typescript/styles.css",
+    "./styles.css": "./ts/styles.css",
     "./package.json": "./package.json",
     "./contracts/v1/flow.json": "./contracts/v1/flow.json",
-    "./contracts/v1/conformance.json": "./contracts/v1/conformance.json",
-    "./copy/en.json": "./copy/en.json"
+    "./locales/*": "./locales/*"
   },
   "files": [
     "dist",
-    "implementations/typescript/styles.css",
+    "ts/styles.css",
     "contracts",
-    "copy",
-    "docs/integration.md",
+    "locales",
     "LICENSE"
   ],
   "sideEffects": [
-    "./implementations/typescript/styles.css"
+    "./ts/styles.css"
   ],
   "engines": {
     "node": ">=22.12.0"
@@ -77,14 +75,14 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsup implementations/typescript/src/index.ts implementations/typescript/src/dom.ts implementations/typescript/src/oauth.ts --tsconfig implementations/typescript/tsconfig.json --format esm,cjs --splitting --dts --clean",
-    "typecheck": "tsc --project implementations/typescript/tsconfig.json --noEmit",
+    "build": "tsup ts/src/index.ts ts/src/dom.ts ts/src/oauth.ts --tsconfig ts/tsconfig.json --format esm,cjs --splitting --dts --clean",
+    "typecheck": "tsc --project ts/tsconfig.json --noEmit",
     "test": "vitest run",
     "check": "npm run typecheck && npm test && npm run build",
     "prepare": "npm run build",
     "prepublishOnly": "npm run check",
-    "dev": "vite implementations/typescript/examples --host 127.0.0.1",
-    "build:examples": "vite build implementations/typescript/examples --base ./ --outDir ../../../example-dist --emptyOutDir"
+    "dev": "vite ts/examples --host 127.0.0.1",
+    "build:examples": "vite build ts/examples --base ./ --outDir ../../example-dist --emptyOutDir"
   },
   "peerDependencies": {
     "@atproto/oauth-client-browser": "^0.5.9"

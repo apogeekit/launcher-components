@@ -2,7 +2,7 @@
   "version": 1,
   "defaultMode": "both",
   "copy": {
-    "directory": "copy",
+    "directory": "locales",
     "defaultLocale": "en",
     "interpolation": "{{name}}",
     "placeholders": ["appName", "name", "count", "total"]

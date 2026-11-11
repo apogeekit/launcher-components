@@ -1,4 +1,4 @@
-name: TypeScript and shared contracts
+name: TypeScript and shared tests
 on: [push, pull_request, workflow_dispatch]
 permissions:
   contents: read

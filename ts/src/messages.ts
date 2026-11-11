@@ -1,4 +1,4 @@
-import englishSource from '../../../copy/en.json'
+import englishSource from '../../locales/en.json'
 import type { Translate } from './types'
 
 /** Replace any key, or pass your own translator. Provider descriptions stay plain text. */

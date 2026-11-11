@@ -1,6 +1,6 @@
 import { expect, expectTypeOf, test } from 'vitest'
-import contract from '../../../contracts/v1/flow.json'
-import corpus from '../../../contracts/v1/conformance.json'
+import contract from '../../contracts/v1/flow.json'
+import corpus from '../../tests/fixtures/login-flow-cases.json'
 import {
   createLoginFlow,
   english,
@@ -37,7 +37,7 @@ interface SharedCase {
   }>
 }
 
-test('shared contract names, defaults, and copy are usable by every implementation', () => {
+test('shared flow rules, defaults, and translations remain consistent', () => {
   expectTypeOf<LoginMode>().toEqualTypeOf<keyof typeof contract.modes>()
   expectTypeOf<View>().toEqualTypeOf<keyof typeof contract.views>()
   expectTypeOf<Intent>().toEqualTypeOf<keyof typeof contract.intents>()
@@ -65,7 +65,7 @@ test('shared contract names, defaults, and copy are usable by every implementati
   }
 })
 
-test.each(corpus.cases as unknown as SharedCase[])('portable flow: $id', async scenario => {
+test.each(corpus.cases as unknown as SharedCase[])('shared login flow: $id', async scenario => {
   const requests: AuthRequest[] = []
   const pending: Promise<void>[] = []
   const resolvers: Array<() => void> = []
@@ -162,7 +162,7 @@ test.each(corpus.cases as unknown as SharedCase[])('portable flow: $id', async s
           await Promise.all(pending.splice(0))
           break
         default:
-          throw new Error(`Unknown conformance action: ${step.action}`)
+          throw new Error(`Unknown shared test action: ${step.action}`)
       }
     }
   } finally {
