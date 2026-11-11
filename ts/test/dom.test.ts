@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 import { afterEach, expect, test, vi } from 'vitest'
 import { createLoginFlow } from '../src/index'
-import { mountLogin, renderProviderPicker } from '../src/dom'
+import { mountLogin, openLoginDialog, renderProviderPicker } from '../src/dom'
 import { providers } from '../../tests/fixtures/login-flow-cases.json'
 
 afterEach(() => document.body.replaceChildren())
@@ -44,6 +44,40 @@ test('handle validation retains input, describes the error, and moves focus to t
   expect(document.activeElement).toBe(input)
   expect(input.getAttribute('aria-describedby')).toContain(node.querySelector('[role="alert"]')!.id)
   expect(start).not.toHaveBeenCalled()
+  flow.destroy()
+})
+
+test('inline mounting can preserve focus while later navigation still announces its screen', () => {
+  const opener = document.createElement('button')
+  document.body.append(opener)
+  opener.focus()
+  const node = root()
+  const flow = createLoginFlow({ providers, auth: { start: async () => {} } })
+  const stop = mountLogin(node, flow, { focusOnMount: false })
+  expect(document.activeElement).toBe(opener)
+  flow.showSignup()
+  expect(document.activeElement).toBe(node.querySelector('h2'))
+  stop()
+  flow.destroy()
+})
+
+test('full-screen dialogs expose presentation and restore the opener after closing', () => {
+  const opener = document.createElement('button')
+  document.body.append(opener)
+  opener.focus()
+  const flow = createLoginFlow({ providers, auth: { start: async () => {} } })
+  const onClose = vi.fn()
+  const view = openLoginDialog(flow, { presentation: 'fullscreen', focusOnMount: false, onClose })
+  expect(view.dialog.open).toBe(true)
+  expect(view.dialog.dataset.presentation).toBe('fullscreen')
+  expect(document.activeElement).toBe(view.dialog.querySelector('h2'))
+  view.close()
+  // Native close events are queued by browsers; dispatch here for the DOM test environment.
+  view.dialog.dispatchEvent(new Event('close'))
+  expect(view.dialog.isConnected).toBe(false)
+  expect(document.activeElement).toBe(opener)
+  view.destroy()
+  expect(onClose).toHaveBeenCalledOnce()
   flow.destroy()
 })
 

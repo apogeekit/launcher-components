@@ -80,6 +80,14 @@
   overflow: auto;
   padding: 1.5rem;
 }
+:where([data-launcher-dialog][data-presentation='fullscreen']) {
+  inline-size: 100%;
+  max-inline-size: none;
+  block-size: 100dvh;
+  max-block-size: none;
+  margin: 0;
+  border: 0;
+}
 @media (prefers-reduced-motion: reduce) {
   :where([data-launcher] *, [data-launcher-dialog]) {
     scroll-behavior: auto;

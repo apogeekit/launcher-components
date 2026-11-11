@@ -26,7 +26,9 @@ const unmount = mountLogin(container, flow, { appName: 'Your app' })
 // On teardown: unmount(); flow.destroy()
 ```
 
-No CSS loads automatically. Components use light DOM, inherited fonts, and stable `data-part` attributes. Optional structural CSS: `launcher-components/styles.css`. Use `openLoginDialog` for a modal or `presentation: 'fullscreen'` for a full-page layout.
+No CSS loads automatically. Components use light DOM, inherited fonts, and stable `data-part` attributes. Optional structural CSS: `launcher-components/styles.css`. Use `openLoginDialog` for a modal; `presentation: 'fullscreen'` also works on dialogs. Set `focusOnMount: false` for an inline form that should leave keyboard focus where it is.
+
+English and Spanish catalogs live in `locales/`. Pass a catalog to `translate()` or supply your own `t` function.
 
 Shared translations live in `locales/`. Future implementations, such as `dart/`, can sit alongside `ts/` at the repository root. Shared test cases in `tests/fixtures/login-flow-cases.json` check consistent login behavior across implementations; they are not included in the npm package.
 

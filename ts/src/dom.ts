@@ -16,6 +16,8 @@ export interface MountOptions<Result> {
   t?: Translate
   headingLevel?: 1 | 2 | 3
   presentation?: 'inline' | 'fullscreen'
+  /** Set false when embedding a form in a page that already has keyboard focus. Later screen changes still focus. */
+  focusOnMount?: boolean
   idPrefix?: string
   logoUrl?: (provider: AccountProvider) => string | undefined
   /** Runs after replacing a screen, before heading focus. Add your own brand or notices here. */
@@ -46,6 +48,7 @@ export function mountLogin<Result>(root: HTMLElement, flow: LoginFlow<Result>, o
   function render() {
     if (disposed) return
     const state = flow.getState()
+    const shouldFocus = last !== undefined || options.focusOnMount !== false
     const replace = !last || last.view !== state.view || last.error !== state.error
     last = state
     if (replace) {
@@ -190,9 +193,11 @@ export function mountLogin<Result>(root: HTMLElement, flow: LoginFlow<Result>, o
         else root.append(text('p', 'complete.hint'))
       }
       options.onScreen?.(root, state.view)
-      if (state.error && state.view === 'signin') root.querySelector<HTMLInputElement>('input')?.focus()
-      else if (state.error && state.view === 'providers') root.querySelector<HTMLInputElement>('form input')?.focus()
-      else heading.focus({ preventScroll: true })
+      if (shouldFocus) {
+        if (state.error && state.view === 'signin') root.querySelector<HTMLInputElement>('input')?.focus()
+        else if (state.error && state.view === 'providers') root.querySelector<HTMLInputElement>('form input')?.focus()
+        else heading.focus({ preventScroll: true })
+      }
     }
     root.toggleAttribute('aria-busy', state.busy)
     if (state.busy) root.setAttribute('aria-busy', 'true')
@@ -243,6 +248,7 @@ export function openLoginDialog<Result>(
   const opener = doc.activeElement
   const dialog = element(doc, 'dialog', '', '', 'dialog')
   dialog.dataset.launcherDialog = ''
+  dialog.dataset.presentation = options.presentation ?? 'inline'
   const prefix = options.idPrefix ?? uniqueId()
   const root = element(doc, 'div')
   const close = button(doc, (options.t ?? translate())('actions.close'), () => dialog.close(), 'launcher-close')
