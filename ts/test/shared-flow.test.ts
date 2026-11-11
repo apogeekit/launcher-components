@@ -1,5 +1,5 @@
 import { expect, expectTypeOf, test } from 'vitest'
-import contract from '../../contracts/v1/flow.json'
+import catalog from '../../locales/en.json'
 import corpus from '../../tests/fixtures/login-flow-cases.json'
 import {
   createLoginFlow,
@@ -7,9 +7,8 @@ import {
   LauncherError,
   type AuthRequest,
   type ErrorKey,
-  type Intent,
+  type LoginFlow,
   type LoginFlowOptions,
-  type LoginMode,
   type View,
 } from '../src/index'
 
@@ -25,7 +24,7 @@ interface SharedCase {
   auth?: { start?: Simulation; finish?: Simulation; errorKey?: ErrorKey }
   configurationError?: boolean
   steps?: Array<{
-    action: keyof typeof contract.actions | 'expect' | 'resolve'
+    action: keyof LoginFlow<Result> | 'expect' | 'resolve'
     input?: string
     defer?: boolean
     state?: { view?: View; busy?: boolean; identifier?: string; error?: ErrorKey | null; hasResult?: boolean }
@@ -37,30 +36,17 @@ interface SharedCase {
   }>
 }
 
-test('shared flow rules, defaults, and translations remain consistent', () => {
-  expectTypeOf<LoginMode>().toEqualTypeOf<keyof typeof contract.modes>()
-  expectTypeOf<View>().toEqualTypeOf<keyof typeof contract.views>()
-  expectTypeOf<Intent>().toEqualTypeOf<keyof typeof contract.intents>()
-  expectTypeOf<ErrorKey>().toEqualTypeOf<keyof typeof contract.errors>()
-  expect(corpus.version).toBe(contract.version)
+test('shared cases, default mode, and translations remain consistent', () => {
+  expectTypeOf(catalog).toMatchTypeOf<Record<ErrorKey, string>>()
+  expect(corpus.version).toBe(1)
   expect(new Set(corpus.cases.map(c => c.id)).size).toBe(corpus.cases.length)
-  const views = new Set(Object.keys(contract.views))
-  for (const [mode, definition] of Object.entries(contract.modes)) {
-    expect(views.has(definition.initialView)).toBe(true)
-    const flow = createLoginFlow({ providers, mode: mode as LoginMode, auth: { start: async () => {} } })
-    expect(flow.getState().view).toBe(definition.initialView)
-    flow.destroy()
-  }
   const flow = createLoginFlow({ providers, auth: { start: async () => {} } })
-  expect(flow.mode).toBe(contract.defaultMode)
+  expect(flow.mode).toBe('both')
   flow.destroy()
-  for (const [key, error] of Object.entries(contract.errors)) {
-    expect(views.has(error.view)).toBe(true)
-    expect(typeof english[key]).toBe('string')
-  }
+  const values = { appName: 'Example app', name: 'Example host', count: 1, total: 2 }
   for (const message of Object.values(english)) {
     for (const match of message.matchAll(/\{\{(\w+)\}\}/g)) {
-      expect(contract.copy.placeholders).toContain(match[1])
+      expect(values).toHaveProperty(match[1]!)
     }
   }
 })

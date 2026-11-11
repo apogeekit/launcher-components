@@ -40,13 +40,11 @@
     },
     "./styles.css": "./ts/styles.css",
     "./package.json": "./package.json",
-    "./contracts/v1/flow.json": "./contracts/v1/flow.json",
     "./locales/*": "./locales/*"
   },
   "files": [
     "dist",
     "ts/styles.css",
-    "contracts",
     "locales",
     "LICENSE"
   ],
