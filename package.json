@@ -1,6 +1,6 @@
 {
-  "name": "launcher-components",
-  "version": "0.1.0",
+  "name": "@apogeekit/launcher-components",
+  "version": "0.1.0-alpha.1",
   "description": "Framework-independent AT Protocol login and onboarding components with a default stylesheet or client-provided styling.",
   "license": "MIT",
   "type": "module",
@@ -46,6 +46,7 @@
     "dist",
     "ts/styles.css",
     "locales",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "sideEffects": [
@@ -56,10 +57,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/solimaniac/launcher-components.git"
+    "url": "git+https://github.com/apogeekit/launcher-components.git"
   },
-  "homepage": "https://github.com/solimaniac/launcher-components#readme",
-  "bugs": "https://github.com/solimaniac/launcher-components/issues",
+  "homepage": "https://github.com/apogeekit/launcher-components#readme",
+  "bugs": "https://github.com/apogeekit/launcher-components/issues",
   "keywords": [
     "atproto",
     "at-protocol",
@@ -70,7 +71,9 @@
     "components"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "tag": "alpha",
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "build": "tsup ts/src/index.ts ts/src/dom.ts ts/src/oauth.ts --tsconfig ts/tsconfig.json --format esm,cjs --splitting --dts --loader .css=text --clean",
