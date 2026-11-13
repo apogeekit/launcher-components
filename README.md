@@ -52,4 +52,4 @@ English and Spanish catalogs live in `locales/`. Pass a catalog to `translate()`
 
 Shared translations live in `locales/`. Future implementations, such as `dart/`, can sit alongside `ts/` at the repository root. Shared test cases in `tests/fixtures/login-flow-cases.json` check consistent login behavior across implementations; they are not included in the npm package.
 
-Not published to npm yet. Development: `npm ci && npm run check`; `npm run dev` opens the TypeScript examples. Publish later with `npm publish --access public`; npmx.dev browses npm. Nothing publishes automatically.
+Not published to npm yet. Development: `npm ci && npm run check`; `npm run dev` opens a small local UI harness for checking inline forms, dialogs, host selection, and error states. Publish later with `npm publish --access public`; npmx.dev browses npm. Nothing publishes automatically.
