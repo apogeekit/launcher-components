@@ -1,6 +1,5 @@
 import { createLoginFlow, LauncherError, type AccountProvider } from '../src/index'
-import { mountLogin, openLoginDialog } from '../src/dom'
-import '../styles.css'
+import { mountLogin, openLoginDialog, renderProviderPicker } from '../src/dom'
 
 // Deliberately fictional hosts for this offline UI harness. Use pds-registry in your real app.
 const providers: AccountProvider[] = [
@@ -48,21 +47,37 @@ function makeFlow() {
     },
   })
 }
-const options = { appName: 'Example app' }
+const options = () => ({
+  appName: 'Example app',
+  stylesheet:
+    document.querySelector<HTMLSelectElement>('#stylesheet')!.value === 'unstyled' ? (false as const) : undefined,
+})
 let flow = makeFlow()
-let unmount = mountLogin(document.querySelector<HTMLElement>('#inline')!, flow, options)
-document.querySelector<HTMLSelectElement>('#theme')!.onchange = event => {
-  document.body.dataset.theme = (event.target as HTMLSelectElement).value
+let unmount = mountLogin(document.querySelector<HTMLElement>('#inline')!, flow, options())
+function renderPicker() {
+  const picker = renderProviderPicker(document, {
+    ...options(),
+    providers,
+    onSelect(provider) {
+      document.querySelector<HTMLOutputElement>('#selected')!.textContent = provider.serviceUrl
+    },
+  })
+  document.querySelector('#picker')!.replaceChildren(picker.element)
+  document.querySelector('#selected')!.textContent = ''
 }
-document.querySelector<HTMLButtonElement>('#reset')!.onclick = () => {
+function reset() {
   unmount()
   flow.destroy()
   flow = makeFlow()
-  unmount = mountLogin(document.querySelector<HTMLElement>('#inline')!, flow, options)
+  unmount = mountLogin(document.querySelector<HTMLElement>('#inline')!, flow, options())
+  renderPicker()
 }
+renderPicker()
+document.querySelector<HTMLSelectElement>('#stylesheet')!.onchange = reset
+document.querySelector<HTMLButtonElement>('#reset')!.onclick = reset
 document.querySelector<HTMLButtonElement>('#open-dialog')!.onclick = () => {
   const modalFlow = makeFlow()
-  openLoginDialog(modalFlow, { ...options, onClose: () => modalFlow.destroy() })
+  openLoginDialog(modalFlow, { ...options(), onClose: () => modalFlow.destroy() })
 }
 let closeFullScreen: (() => void) | undefined
 document.querySelector<HTMLButtonElement>('#open-fullscreen')!.onclick = () => {
@@ -70,7 +85,7 @@ document.querySelector<HTMLButtonElement>('#open-fullscreen')!.onclick = () => {
   section.hidden = false
   const fullFlow = makeFlow()
   const stop = mountLogin(document.querySelector<HTMLElement>('#fullscreen-content')!, fullFlow, {
-    ...options,
+    ...options(),
     presentation: 'fullscreen',
     headingLevel: 1,
   })

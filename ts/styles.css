@@ -1,95 +1,230 @@
-/* Optional structural defaults. Every selector has zero specificity. No fonts or palette. */
-:where([data-launcher]) {
-  min-inline-size: 0;
-  overflow-wrap: anywhere;
-}
-:where([data-launcher] *, [data-launcher-dialog]) {
-  box-sizing: border-box;
-}
-:where([data-launcher] [hidden]) {
-  display: none !important;
-}
-:where([data-launcher] button, [data-launcher] input, [data-launcher] select, [data-launcher-dialog] > button) {
-  font: inherit;
-  color: inherit;
-  min-block-size: 44px;
-  max-inline-size: 100%;
-}
-:where([data-launcher] button, [data-launcher-dialog] > button) {
-  cursor: pointer;
-}
-:where([data-launcher] summary) {
-  min-block-size: 44px;
-  cursor: pointer;
-}
-:where([data-launcher] button:disabled) {
-  cursor: wait;
-}
-:where([data-launcher] :focus-visible, [data-launcher-dialog] > button:focus-visible) {
-  outline: 2px solid currentColor;
-  outline-offset: 3px;
-}
-:where([data-launcher] form, [data-launcher] [data-part='provider-picker'], [data-launcher] .providers) {
-  display: grid;
-  gap: 1rem;
-}
-:where([data-launcher] form) {
-  margin-block: 1rem;
-}
-:where([data-launcher] input, [data-launcher] select) {
-  inline-size: 100%;
-}
-:where([data-launcher] input[type='checkbox']) {
-  inline-size: 1.25rem;
-  min-block-size: 1.25rem;
-}
-:where([data-launcher] .provider) {
-  display: flex;
-  gap: 1rem;
-  text-align: start;
-  padding: 1rem;
-}
-:where([data-launcher] .provider img) {
-  inline-size: 2rem;
-  block-size: 2rem;
-  object-fit: contain;
-}
-:where([data-launcher] .provider-details) {
-  display: grid;
-  gap: 0.25rem;
-}
-:where([data-launcher] .provider-summary, [data-launcher] .region-choices) {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  align-items: center;
-}
-:where([data-launcher] .region-choice) {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  min-block-size: 44px;
-}
-:where([data-launcher][data-presentation='fullscreen']) {
-  min-block-size: 100dvh;
-  padding: clamp(1rem, 4vw, 3rem);
-}
-:where([data-launcher-dialog]) {
-  inline-size: min(36rem, calc(100% - 2rem));
-  max-block-size: calc(100dvh - 2rem);
-  overflow: auto;
-  padding: 1.5rem;
-}
-:where([data-launcher-dialog][data-presentation='fullscreen']) {
-  inline-size: 100%;
-  max-inline-size: none;
-  block-size: 100dvh;
-  max-block-size: none;
-  margin: 0;
-  border: 0;
-}
-@media (prefers-reduced-motion: reduce) {
-  :where([data-launcher] *, [data-launcher-dialog]) {
-    scroll-behavior: auto;
+/* Fixed fallback appearance, applied only to instances using the built-in stylesheet. */
+@layer launcher-components {
+  :where([data-launcher-style='default']) {
+    box-sizing: border-box;
+    min-inline-size: 0;
+    max-inline-size: 36rem;
+    padding: 1.5rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.75rem;
+    background: #fff;
+    color: #172238;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+    color-scheme: light;
+  }
+  :where([data-launcher-style='default'] *) {
+    box-sizing: border-box;
+  }
+  :where([data-launcher-style='default'] [hidden]) {
+    display: none !important;
+  }
+  :where([data-launcher-style='default'] h1, [data-launcher-style='default'] h2, [data-launcher-style='default'] h3) {
+    margin: 0 0 0.75rem;
+    font: inherit;
+    font-size: 1.5rem;
+    font-weight: 650;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+  }
+  :where([data-launcher-style='default'] p) {
+    margin: 0 0 1rem;
+  }
+  :where(
+    [data-launcher-style='default'] button,
+    [data-launcher-style='default'] input,
+    [data-launcher-style='default'] select
+  ) {
+    min-inline-size: 0;
+    min-block-size: 44px;
+    max-inline-size: 100%;
+    padding: 0.625rem 0.875rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.375rem;
+    font: inherit;
+    line-height: 1.5;
+  }
+  :where([data-launcher-style='default'] button) {
+    background: #1859b8;
+    border-color: #1859b8;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    overflow-wrap: anywhere;
+  }
+  :where([data-launcher-style='default'] button:not(:disabled):hover) {
+    filter: brightness(0.94);
+  }
+  :where(
+    [data-launcher-style='default'] .secondary,
+    [data-launcher-style='default'] .provider,
+    [data-launcher-style='default'] .provider-toggle,
+    [data-launcher-style='default'] .launcher-close
+  ) {
+    background: #fff;
+    border-color: #cbd5e1;
+    color: #172238;
+  }
+  :where(
+    [data-launcher-style='default'] button:disabled,
+    [data-launcher-style='default'] input:disabled,
+    [data-launcher-style='default'] select:disabled
+  ) {
+    opacity: 0.6;
+    cursor: wait;
+  }
+  :where([data-launcher-style='default'] :focus-visible) {
+    outline: 2px solid #1859b8;
+    outline-offset: 3px;
+  }
+  :where(
+    [data-launcher-style='default'] form,
+    [data-launcher-style='default'] [data-part='provider-picker'],
+    [data-launcher-style='default'] .providers,
+    [data-launcher-style='default'][data-part='provider-picker']
+  ) {
+    display: grid;
+    gap: 0.75rem;
+  }
+  :where([data-launcher-style='default'] form) {
+    margin-block: 1.5rem 0.75rem;
+  }
+  :where([data-launcher-style='default'] input, [data-launcher-style='default'] select) {
+    inline-size: 100%;
+    background: #fff;
+    color: #172238;
+  }
+  :where([data-launcher-style='default'] label, [data-launcher-style='default'] legend) {
+    font-weight: 600;
+  }
+  :where(
+    [data-launcher-style='default'] form p,
+    [data-launcher-style='default'] .region,
+    [data-launcher-style='default'] .provider-description,
+    [data-launcher-style='default'] [role='status']
+  ) {
+    color: #475569;
+    font-size: 0.875rem;
+    font-weight: 400;
+  }
+  :where([data-launcher-style='default'] form p) {
+    margin: 0;
+  }
+  :where(
+    [data-launcher-style='default'] [data-launcher] > button,
+    [data-launcher-style='default'][data-launcher] > button
+  ) {
+    display: block;
+    inline-size: 100%;
+    margin-block: 0.75rem;
+  }
+  :where([data-launcher-style='default'] details) {
+    margin-block-start: 1.5rem;
+    border-block-start: 1px solid #cbd5e1;
+  }
+  :where([data-launcher-style='default'] summary) {
+    min-block-size: 44px;
+    padding-block: 0.75rem;
+    cursor: pointer;
+  }
+  :where([data-launcher-style='default'] .benefits) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+    gap: 1.5rem;
+    margin-block: 1.5rem 0;
+    padding: 1.5rem 0 0;
+    border-block-start: 1px solid #cbd5e1;
+    list-style: none;
+  }
+  :where([data-launcher-style='default'] .benefits p) {
+    margin: 0.5rem 0 0;
+  }
+  :where([data-launcher-style='default'] .provider) {
+    display: flex;
+    align-items: start;
+    gap: 0.75rem;
+    inline-size: 100%;
+    padding: 1rem;
+    text-align: start;
+  }
+  :where([data-launcher-style='default'] .provider img) {
+    flex: 0 0 auto;
+    inline-size: 2rem;
+    block-size: 2rem;
+    object-fit: contain;
+  }
+  :where([data-launcher-style='default'] .provider-details) {
+    display: grid;
+    min-inline-size: 0;
+    gap: 0.25rem;
+  }
+  :where([data-launcher-style='default'] .provider-summary, [data-launcher-style='default'] .region-choices) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  :where([data-launcher-style='default'] .provider-summary p) {
+    margin: 0;
+    margin-inline-end: auto;
+  }
+  :where([data-launcher-style='default'] .provider-field) {
+    display: grid;
+    gap: 0.5rem;
+    margin-block-end: 1rem;
+  }
+  :where([data-launcher-style='default'] fieldset) {
+    min-inline-size: 0;
+    padding: 0.75rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.375rem;
+  }
+  :where([data-launcher-style='default'] input[type='checkbox']) {
+    inline-size: 1.25rem;
+    min-block-size: 1.25rem;
+    accent-color: #1859b8;
+  }
+  :where([data-launcher-style='default'] .region-choice) {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-block-size: 44px;
+    font-weight: 400;
+  }
+  :where([data-launcher-style='default'] [aria-invalid='true']) {
+    border-color: #b42318;
+  }
+  :where([data-launcher-style='default'] [role='alert']) {
+    padding-inline-start: 0.75rem;
+    border-inline-start: 3px solid #b42318;
+    color: #b42318;
+  }
+  :where([data-launcher-style='default'][data-presentation='fullscreen']) {
+    max-inline-size: none;
+    min-block-size: 100dvh;
+    padding: clamp(1rem, 4vw, 3rem);
+  }
+  :where([data-launcher-style='default'][data-launcher-dialog]) {
+    inline-size: min(36rem, calc(100% - 2rem));
+    max-block-size: calc(100dvh - 2rem);
+    overflow: auto;
+  }
+  :where([data-launcher-style='default'] .launcher-close) {
+    display: block;
+    margin-inline-start: auto;
+    margin-block-end: 1rem;
+  }
+  :where([data-launcher-style='default'][data-launcher-dialog])::backdrop {
+    background: rgb(15 23 42 / 0.45);
+  }
+  :where([data-launcher-style='default'][data-launcher-dialog][data-presentation='fullscreen']) {
+    inline-size: 100%;
+    block-size: 100dvh;
+    max-block-size: none;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
   }
 }

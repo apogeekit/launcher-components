@@ -131,3 +131,88 @@ test('busy controls block duplicate selection and recover without leaking librar
   expect(document.activeElement).toBe(node.querySelector('h1'))
   flow.destroy()
 })
+
+test('default styles survive screen changes, honor a CSP nonce, and leave with the instance', () => {
+  const node = root()
+  node.setAttribute('data-launcher-style', 'client-value')
+  const flow = createLoginFlow({ providers, auth: { start: async () => {} } })
+  const stop = mountLogin(node, flow, { nonce: 'test-nonce' })
+  const style = node.querySelector('style')!
+  expect(style.nonce).toBe('test-nonce')
+  expect(document.head.querySelector('style')).toBeNull()
+  flow.showSignup()
+  flow.showProviders()
+  expect(node.querySelectorAll('style')).toHaveLength(1)
+  expect(node.querySelector('style')).toBe(style)
+  stop()
+  flow.destroy()
+  expect(node.getAttribute('data-launcher-style')).toBe('client-value')
+  expect(node.querySelector('style')).toBeNull()
+})
+
+test('unstyled flows keep signup screens and embedded pickers free of default styles', () => {
+  const node = root()
+  const flow = createLoginFlow({ providers, auth: { start: async () => {} } })
+  const stop = mountLogin(node, flow, { stylesheet: false })
+  flow.showProviders()
+  expect(node.querySelector('[data-part="provider-picker"]')).not.toBeNull()
+  expect(node.querySelector('style')).toBeNull()
+  expect(node.hasAttribute('data-launcher-style')).toBe(false)
+  stop()
+  flow.destroy()
+})
+
+test('a client stylesheet replaces the default for the entire flow', () => {
+  const node = root()
+  const flow = createLoginFlow({ providers, auth: { start: async () => {} } })
+  const stylesheet = '[data-launcher] { font-family: serif; }'
+  const stop = mountLogin(node, flow, { stylesheet, nonce: 'client-nonce' })
+  flow.showProviders()
+  expect(node.querySelectorAll('style')).toHaveLength(1)
+  expect(node.querySelector('style')!.textContent).toBe(stylesheet)
+  expect(node.querySelector('style')!.nonce).toBe('client-nonce')
+  expect(node.getAttribute('data-launcher-style')).toBe('custom')
+  expect(node.querySelector('[data-launcher-style="default"]')).toBeNull()
+  stop()
+  flow.destroy()
+})
+
+test('an explicitly empty client stylesheet does not fall back to the default', () => {
+  const node = root()
+  const flow = createLoginFlow({ providers, auth: { start: async () => {} } })
+  const stop = mountLogin(node, flow, { stylesheet: '' })
+  expect(node.querySelector('style')!.textContent).toBe('')
+  expect(node.getAttribute('data-launcher-style')).toBe('custom')
+  stop()
+  flow.destroy()
+})
+
+test('standalone pickers carry default styles into shadow roots and can opt out', () => {
+  const shadow = root().attachShadow({ mode: 'open' })
+  const styled = renderProviderPicker(document, { providers, onSelect() {}, nonce: 'picker-nonce' })
+  const raw = renderProviderPicker(document, { providers, onSelect() {}, stylesheet: false })
+  const clientCss = '[data-part="provider-picker"] { color: green; }'
+  const custom = renderProviderPicker(document, { providers, onSelect() {}, stylesheet: clientCss })
+  shadow.append(styled.element, raw.element, custom.element)
+  expect(styled.element.querySelector('style')!.getRootNode()).toBe(shadow)
+  expect(styled.element.querySelector('style')!.nonce).toBe('picker-nonce')
+  expect(raw.element.querySelector('style')).toBeNull()
+  expect(raw.element.hasAttribute('data-launcher-style')).toBe(false)
+  expect(custom.element.querySelector('style')!.textContent).toBe(clientCss)
+  expect(custom.element.getAttribute('data-launcher-style')).toBe('custom')
+})
+
+test('dialogs use only the selected stylesheet across all screens', () => {
+  const clientCss = '[data-launcher-dialog] { color: green; }'
+  for (const stylesheet of [undefined, clientCss, false] as const) {
+    const flow = createLoginFlow({ providers, auth: { start: async () => {} } })
+    const view = openLoginDialog(flow, { stylesheet, nonce: 'dialog-nonce' })
+    flow.showProviders()
+    expect(view.dialog.querySelectorAll('style')).toHaveLength(stylesheet === false ? 0 : 1)
+    if (stylesheet !== false) expect(view.dialog.querySelector('style')!.nonce).toBe('dialog-nonce')
+    if (typeof stylesheet === 'string') expect(view.dialog.querySelector('style')!.textContent).toBe(clientCss)
+    view.destroy()
+    flow.destroy()
+    expect(document.querySelector('dialog, style')).toBeNull()
+  }
+})
