@@ -28,7 +28,7 @@ export interface MountOptions<Result> extends StyleOptions {
   renderComplete?: (root: HTMLElement, result: Result) => void
 }
 
-/** Accessible light DOM with overridable defaults. Pass unstyled: true for raw markup. */
+/** Accessible light DOM. A client stylesheet replaces the fixed default; false leaves raw markup. */
 export function mountLogin<Result>(root: HTMLElement, flow: LoginFlow<Result>, options: MountOptions<Result> = {}) {
   const doc = root.ownerDocument
   const t = options.t ?? translate()
@@ -132,7 +132,7 @@ export function mountLogin<Result>(root: HTMLElement, flow: LoginFlow<Result>, o
           state: pickerState,
           t,
           idPrefix: options.idPrefix ?? prefix,
-          unstyled: true,
+          stylesheet: false,
           ...(options.logoUrl ? { logoUrl: options.logoUrl } : {}),
           onSelect: provider => {
             void flow.signUp(provider.id)
@@ -264,7 +264,7 @@ export function openLoginDialog<Result>(
   doc.body.append(dialog)
   const unmount = mountLogin(root, flow, {
     ...options,
-    unstyled: true,
+    stylesheet: false,
     idPrefix: prefix,
     headingLevel: options.headingLevel ?? 2,
   })

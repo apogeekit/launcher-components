@@ -1,7 +1,7 @@
 {
   "name": "launcher-components",
   "version": "0.1.0",
-  "description": "Framework-independent AT Protocol login and onboarding components with customizable default styles.",
+  "description": "Framework-independent AT Protocol login and onboarding components with a default stylesheet or client-provided styling.",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.cjs",

@@ -1,5 +1,6 @@
 import { createLoginFlow, LauncherError, type AccountProvider } from '../src/index'
 import { mountLogin, openLoginDialog, renderProviderPicker } from '../src/dom'
+import clientStyles from './client.css?inline'
 
 // Deliberately fictional hosts for this offline UI harness. Use pds-registry in your real app.
 const providers: AccountProvider[] = [
@@ -49,7 +50,12 @@ function makeFlow() {
 }
 const options = () => ({
   appName: 'Example app',
-  unstyled: document.querySelector<HTMLSelectElement>('#theme')!.value === 'unstyled',
+  stylesheet:
+    document.querySelector<HTMLSelectElement>('#theme')!.value === 'client'
+      ? clientStyles
+      : document.querySelector<HTMLSelectElement>('#theme')!.value === 'unstyled'
+        ? (false as const)
+        : undefined,
 })
 let flow = makeFlow()
 let unmount = mountLogin(document.querySelector<HTMLElement>('#inline')!, flow, options())
@@ -72,8 +78,7 @@ function reset() {
   renderPicker()
 }
 renderPicker()
-document.querySelector<HTMLSelectElement>('#theme')!.onchange = event => {
-  document.body.dataset.theme = (event.target as HTMLSelectElement).value
+document.querySelector<HTMLSelectElement>('#theme')!.onchange = () => {
   reset()
 }
 document.querySelector<HTMLButtonElement>('#reset')!.onclick = reset
