@@ -1,7 +1,7 @@
 {
   "name": "launcher-components",
   "version": "0.1.0",
-  "description": "Unstyled, framework-independent AT Protocol login and onboarding components.",
+  "description": "Framework-independent AT Protocol login and onboarding components with customizable default styles.",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -73,7 +73,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsup ts/src/index.ts ts/src/dom.ts ts/src/oauth.ts --tsconfig ts/tsconfig.json --format esm,cjs --splitting --dts --clean",
+    "build": "tsup ts/src/index.ts ts/src/dom.ts ts/src/oauth.ts --tsconfig ts/tsconfig.json --format esm,cjs --splitting --dts --loader .css=text --clean",
     "typecheck": "tsc --project ts/tsconfig.json --noEmit",
     "test": "vitest run",
     "check": "npm run typecheck && npm test && npm run build",

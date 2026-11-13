@@ -3,6 +3,9 @@ import type { LoginFlow } from './flow'
 import { translate } from './messages'
 import { button, element, uniqueId } from './elements'
 import { createProviderPickerState, renderProviderPicker } from './picker'
+import { styleComponent, type StyleOptions } from './styles'
+
+export type { StyleOptions } from './styles'
 
 export {
   renderProviderPicker,
@@ -11,7 +14,7 @@ export {
   type ProviderPickerState,
 } from './picker'
 
-export interface MountOptions<Result> {
+export interface MountOptions<Result> extends StyleOptions {
   appName?: string
   t?: Translate
   headingLevel?: 1 | 2 | 3
@@ -25,7 +28,7 @@ export interface MountOptions<Result> {
   renderComplete?: (root: HTMLElement, result: Result) => void
 }
 
-/** Accessible light DOM. No CSS, fonts, document title, navigation or global theme changes. */
+/** Accessible light DOM with overridable defaults. Pass unstyled: true for raw markup. */
 export function mountLogin<Result>(root: HTMLElement, flow: LoginFlow<Result>, options: MountOptions<Result> = {}) {
   const doc = root.ownerDocument
   const t = options.t ?? translate()
@@ -36,7 +39,9 @@ export function mountLogin<Result>(root: HTMLElement, flow: LoginFlow<Result>, o
     launcher: root.getAttribute('data-launcher'),
     view: root.getAttribute('data-view'),
     presentation: root.getAttribute('data-presentation'),
+    'launcher-style': root.getAttribute('data-launcher-style'),
   }
+  const style = styleComponent(root, options)
   root.dataset.launcher = ''
   root.dataset.presentation = options.presentation ?? 'inline'
   let last: LoginState<Result> | undefined
@@ -69,7 +74,7 @@ export function mountLogin<Result>(root: HTMLElement, flow: LoginFlow<Result>, o
       heading.id = `${prefix}-heading`
       heading.tabIndex = -1
       heading.dataset.part = 'heading'
-      root.replaceChildren(heading)
+      root.replaceChildren(...(style ? [style, heading] : [heading]))
       root.dataset.view = state.view
 
       if (state.view === 'intro') {
@@ -127,6 +132,7 @@ export function mountLogin<Result>(root: HTMLElement, flow: LoginFlow<Result>, o
           state: pickerState,
           t,
           idPrefix: options.idPrefix ?? prefix,
+          unstyled: true,
           ...(options.logoUrl ? { logoUrl: options.logoUrl } : {}),
           onSelect: provider => {
             void flow.signUp(provider.id)
@@ -249,12 +255,19 @@ export function openLoginDialog<Result>(
   const dialog = element(doc, 'dialog', '', '', 'dialog')
   dialog.dataset.launcherDialog = ''
   dialog.dataset.presentation = options.presentation ?? 'inline'
+  const style = styleComponent(dialog, options)
   const prefix = options.idPrefix ?? uniqueId()
   const root = element(doc, 'div')
   const close = button(doc, (options.t ?? translate())('actions.close'), () => dialog.close(), 'launcher-close')
+  if (style) dialog.append(style)
   dialog.append(close, root)
   doc.body.append(dialog)
-  const unmount = mountLogin(root, flow, { ...options, idPrefix: prefix, headingLevel: options.headingLevel ?? 2 })
+  const unmount = mountLogin(root, flow, {
+    ...options,
+    unstyled: true,
+    idPrefix: prefix,
+    headingLevel: options.headingLevel ?? 2,
+  })
   dialog.setAttribute('aria-labelledby', `${prefix}-heading`)
   let closed = false
   function cleanup() {

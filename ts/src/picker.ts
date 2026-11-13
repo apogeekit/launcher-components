@@ -1,6 +1,7 @@
 import type { AccountProvider, Translate } from './types'
 import { translate } from './messages'
 import { button, element, safeLogoUrl, uniqueId } from './elements'
+import { styleComponent, type StyleOptions } from './styles'
 
 export interface ProviderPickerState {
   sortBy: 'az' | 'za'
@@ -12,7 +13,7 @@ export function createProviderPickerState(): ProviderPickerState {
   return { sortBy: 'az', regions: new Set(), invite: 'none' }
 }
 
-export interface ProviderPickerOptions {
+export interface ProviderPickerOptions extends StyleOptions {
   providers: readonly AccountProvider[]
   onSelect: (provider: AccountProvider) => void
   t?: Translate
@@ -28,6 +29,8 @@ export function renderProviderPicker(doc: Document, options: ProviderPickerOptio
   const prefix = options.idPrefix ?? uniqueId()
   const providers = options.providers.filter(p => p.enabled)
   const root = element(doc, 'div', '', '', 'provider-picker')
+  const style = styleComponent(root, options)
+  if (style) root.append(style)
   const controls = element(doc, 'div', '', 'provider-controls')
   controls.id = `${prefix}-controls`
   controls.hidden = true

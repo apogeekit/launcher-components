@@ -131,3 +131,57 @@ test('busy controls block duplicate selection and recover without leaking librar
   expect(document.activeElement).toBe(node.querySelector('h1'))
   flow.destroy()
 })
+
+test('default styles survive screen changes, honor a CSP nonce, and leave with the instance', () => {
+  const node = root()
+  node.setAttribute('data-launcher-style', 'client-value')
+  const flow = createLoginFlow({ providers, auth: { start: async () => {} } })
+  const stop = mountLogin(node, flow, { nonce: 'test-nonce' })
+  const style = node.querySelector('style')!
+  expect(style.nonce).toBe('test-nonce')
+  expect(document.head.querySelector('style')).toBeNull()
+  flow.showSignup()
+  flow.showProviders()
+  expect(node.querySelectorAll('style')).toHaveLength(1)
+  expect(node.querySelector('style')).toBe(style)
+  stop()
+  flow.destroy()
+  expect(node.getAttribute('data-launcher-style')).toBe('client-value')
+  expect(node.querySelector('style')).toBeNull()
+})
+
+test('unstyled flows keep signup screens and embedded pickers free of default styles', () => {
+  const node = root()
+  const flow = createLoginFlow({ providers, auth: { start: async () => {} } })
+  const stop = mountLogin(node, flow, { unstyled: true })
+  flow.showProviders()
+  expect(node.querySelector('[data-part="provider-picker"]')).not.toBeNull()
+  expect(node.querySelector('style')).toBeNull()
+  expect(node.hasAttribute('data-launcher-style')).toBe(false)
+  stop()
+  flow.destroy()
+})
+
+test('standalone pickers carry default styles into shadow roots and can opt out', () => {
+  const shadow = root().attachShadow({ mode: 'open' })
+  const styled = renderProviderPicker(document, { providers, onSelect() {}, nonce: 'picker-nonce' })
+  const raw = renderProviderPicker(document, { providers, onSelect() {}, unstyled: true })
+  shadow.append(styled.element, raw.element)
+  expect(styled.element.querySelector('style')!.getRootNode()).toBe(shadow)
+  expect(styled.element.querySelector('style')!.nonce).toBe('picker-nonce')
+  expect(raw.element.querySelector('style')).toBeNull()
+  expect(raw.element.hasAttribute('data-launcher-style')).toBe(false)
+})
+
+test('dialogs share one default stylesheet across screens and support unstyled rendering', () => {
+  for (const unstyled of [false, true]) {
+    const flow = createLoginFlow({ providers, auth: { start: async () => {} } })
+    const view = openLoginDialog(flow, { unstyled, nonce: 'dialog-nonce' })
+    flow.showProviders()
+    expect(view.dialog.querySelectorAll('style')).toHaveLength(unstyled ? 0 : 1)
+    if (!unstyled) expect(view.dialog.querySelector('style')!.nonce).toBe('dialog-nonce')
+    view.destroy()
+    flow.destroy()
+    expect(document.querySelector('dialog, style')).toBeNull()
+  }
+})
