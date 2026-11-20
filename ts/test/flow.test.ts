@@ -19,6 +19,7 @@ test('signup choices enforce enabled state, strict allowlists, and no custom byp
 
 test('accepts complete handles and DIDs without forcing a Bluesky host', () => {
   expect(normalizeIdentifier(' @Alice.Personal.Domain ')).toBe('alice.personal.domain')
+  expect(normalizeIdentifier('8.CN')).toBe('8.cn')
   expect(normalizeIdentifier('did:plc:ewvi7nxzyoun6zhxrhs64oiz')).toMatch(/^did:plc:/)
   expect(normalizeIdentifier('did:web:identity.example:user')).toMatch(/^did:web:/)
   for (const value of [
@@ -27,6 +28,8 @@ test('accepts complete handles and DIDs without forcing a Bluesky host', () => {
     'https://bsky.app/profile/alice',
     '<script>',
     'alice.123',
+    'alice.3com',
+    'K.example',
     '-bad.test',
   ])
     expect(() => normalizeIdentifier(value)).toThrow(LauncherError)
