@@ -2,6 +2,7 @@ import type { AccountProvider, LoginState, Translate, View } from './types'
 import type { LoginFlow } from './flow'
 import { translate } from './messages'
 import { button, element, uniqueId } from './elements'
+import { attachHandleAutocomplete } from './handle-autocomplete'
 import { createProviderPickerState, renderProviderPicker } from './picker'
 import { styleComponent, type StyleOptions } from './styles'
 
@@ -16,6 +17,8 @@ export {
 
 export interface MountOptions<Result> extends StyleOptions {
   appName?: string
+  /** Base URL of an AppView exposing public actor typeahead. Omit to disable handle suggestions. */
+  appViewUrl?: string
   t?: Translate
   headingLevel?: 1 | 2 | 3
   presentation?: 'inline' | 'fullscreen'
@@ -45,6 +48,7 @@ export function mountLogin<Result>(root: HTMLElement, flow: LoginFlow<Result>, o
   root.dataset.launcher = ''
   root.dataset.presentation = options.presentation ?? 'inline'
   let last: LoginState<Result> | undefined
+  let autocomplete: ReturnType<typeof attachHandleAutocomplete>
   let picker: ReturnType<typeof renderProviderPicker> | undefined
   let customService = ''
   let disposed = false
@@ -57,6 +61,8 @@ export function mountLogin<Result>(root: HTMLElement, flow: LoginFlow<Result>, o
     const replace = !last || last.view !== state.view || last.error !== state.error
     last = state
     if (replace) {
+      autocomplete?.destroy()
+      autocomplete = undefined
       picker = undefined
       const title =
         state.view === 'intro'
@@ -106,7 +112,9 @@ export function mountLogin<Result>(root: HTMLElement, flow: LoginFlow<Result>, o
         input.setAttribute('aria-describedby', hint.id)
         const submit = element(doc, 'button', t('signin.submit'), '', 'submit')
         submit.type = 'submit'
-        form.append(label, input, hint)
+        form.append(label, input)
+        if (options.appViewUrl) autocomplete = attachHandleAutocomplete(input, options.appViewUrl, t)
+        form.append(hint)
         if (state.error) {
           const error = text('p', state.error)
           error.id = `${prefix}-identifier-error`
@@ -118,6 +126,7 @@ export function mountLogin<Result>(root: HTMLElement, flow: LoginFlow<Result>, o
         form.append(submit)
         form.onsubmit = event => {
           event.preventDefault()
+          autocomplete?.dismiss()
           void flow.signIn(input.value)
         }
         root.append(form)
@@ -206,7 +215,10 @@ export function mountLogin<Result>(root: HTMLElement, flow: LoginFlow<Result>, o
       }
     }
     root.toggleAttribute('aria-busy', state.busy)
-    if (state.busy) root.setAttribute('aria-busy', 'true')
+    if (state.busy) {
+      autocomplete?.dismiss()
+      root.setAttribute('aria-busy', 'true')
+    }
     picker?.setBusy(state.busy)
     for (const node of root.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLButtonElement>(
       'button, input, select',
@@ -233,6 +245,7 @@ export function mountLogin<Result>(root: HTMLElement, flow: LoginFlow<Result>, o
     if (disposed) return
     disposed = true
     unsubscribe()
+    autocomplete?.destroy()
     root.removeAttribute('aria-busy')
     for (const [key, value] of Object.entries(original)) {
       if (value === null) root.removeAttribute(`data-${key}`)
