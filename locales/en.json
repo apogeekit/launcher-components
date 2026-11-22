@@ -2,6 +2,7 @@
   "signin.title": "Sign in to {{appName}}",
   "signin.intro": "Use your Atmosphere account. You do not need a new account for each app.",
   "signin.label": "Your handle",
+  "signin.suggestions": "Suggested handles",
   "signin.hint": "Enter your full handle, such as alice.example.com. You will sign in securely with your account host.",
   "signin.submit": "Sign in",
   "signin.create": "Create an account",

@@ -28,6 +28,16 @@ const unmount = mountLogin(container, flow, { appName: 'Your app' })
 
 `mountLogin`, `openLoginDialog`, and `renderProviderPicker` use the default stylesheet when `stylesheet` is omitted: system fonts, a neutral surface, readable spacing, visible focus, and controls at least 44px tall. Components use light DOM and stable `data-part` attributes. Use `openLoginDialog` for a modal; `presentation: 'fullscreen'` also works on dialogs. Set `focusOnMount: false` for an inline form that should leave keyboard focus where it is.
 
+### Handle autocomplete
+
+Pass `appViewUrl` to `mountLogin` or `openLoginDialog` to show account suggestions as users type their handle.
+
+```ts
+mountLogin(container, flow, { appViewUrl: 'https://public.api.bsky.app' })
+```
+
+Use the base URL of an AppView that exposes the public `app.bsky.actor.searchActorsTypeahead` endpoint and allows browser requests from your app. The browser sends typed handle prefixes to the configured service in credential-free requests. Avatar URLs come from the AppView. Image requests may include cookies for the image host based on the browser's cookie settings. Unavailable pictures show a placeholder. Selecting a suggestion fills the handle field. Users can enter their full handle or DID and sign in even if the AppView is omitted or unavailable. [Bluesky HTTP API reference](https://endpoints.bsky.app/#bluesky-app)
+
 ### Styling
 
 Choose one stylesheet for each instance:

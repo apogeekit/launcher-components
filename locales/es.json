@@ -2,6 +2,7 @@
   "signin.title": "Inicia sesión en {{appName}}",
   "signin.intro": "Usa tu cuenta de la Atmósfera. No necesitas una cuenta nueva para cada app.",
   "signin.label": "Tu identificador",
+  "signin.suggestions": "Identificadores sugeridos",
   "signin.hint": "Introduce tu identificador completo, como alice.example.com. Iniciarás sesión de forma segura con tu proveedor.",
   "signin.submit": "Iniciar sesión",
   "signin.create": "Crear una cuenta",
