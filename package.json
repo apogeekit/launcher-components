@@ -91,12 +91,12 @@
     }
   },
   "devDependencies": {
-    "@atproto/oauth-client-browser": "^0.5.9",
+    "@atproto/oauth-client-browser": "^0.5.17",
     "@types/node": "^24.19.1",
-    "happy-dom": "^20.14.5",
+    "happy-dom": "^21.0.4",
     "tsup": "^8.5.0",
     "typescript": "~6.0.3",
-    "vitest": "^5.0.3",
-    "vite": "^8.3.2"
+    "vitest": "^5.1.1",
+    "vite": "^8.3.8"
   }
 }
